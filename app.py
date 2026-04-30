@@ -114,6 +114,11 @@ def index():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    # PREVENT ACCESS IF ALREADY LOGGED IN
+    if 'user_id' in session:
+        flash('You need to logout first before registering new user!', 'info')
+        return redirect(url_for('dashboard'))
+
     if request.method == 'POST':
         name  = sanitize_input(request.form.get('name', ''))
         email = sanitize_input(request.form.get('email', '').lower())
@@ -160,6 +165,11 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    # PREVENT ACCESS IF ALREADY LOGGED IN
+    if 'user_id' in session:
+        flash('You are already logged in!', 'info')
+        return redirect(url_for('dashboard'))
+
     if request.method == 'POST':
         email    = sanitize_input(request.form.get('email', '').lower())
         password = request.form.get('password', '')
@@ -266,7 +276,7 @@ def submit_quiz():
     session.pop('quiz_questions', None)  # Clear quiz from session
 
     return render_template('result.html', score=score, total=total,
-                           percentage=round((score/total)*100, 1))
+                            percentage=round((score/total)*100, 1))
 
 # ============================================================
 # ADMIN ROUTES
@@ -279,7 +289,7 @@ def admin_dashboard():
     questions = Question.query.all()
     results = Result.query.all()
     return render_template('admin_dashboard.html',
-                           users=users, questions=questions, results=results)
+                            users=users, questions=questions, results=results)
 
 @app.route('/admin/add_question', methods=['GET', 'POST'])
 @admin_required
@@ -299,8 +309,8 @@ def add_question():
             flash('Correct answer must be A, B, C, or D!', 'danger')
         else:
             q = Question(question_text=q_text, option_a=opt_a, option_b=opt_b,
-                         option_c=opt_c, option_d=opt_d,
-                         correct_answer=correct, category=category)
+                          option_c=opt_c, option_d=opt_d,
+                          correct_answer=correct, category=category)
             db.session.add(q)
             db.session.commit()
             flash('Question added successfully!', 'success')
@@ -350,15 +360,6 @@ def delete_user(uid):
 def init_db():
     with app.app_context():
         db.create_all()
-   
-        
-        # Purane admin ko delete karne ka logic
-        old_admin = User.query.filter_by(email='admin@quiz.com').first()
-        if old_admin:
-            db.session.delete(old_admin)
-            db.session.commit()
-            print("Purana Admin Delete ho gaya!")
-
 
         # Create default admin if not exists
         admin = User.query.filter_by(email='haseebmalik@gmail.com').first()
@@ -426,7 +427,7 @@ def init_db():
 
         db.session.commit()
         print("Database initialized!")
-        
+
 
 if __name__ == '__main__':
     init_db()
