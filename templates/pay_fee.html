@@ -19,22 +19,67 @@
             <div style="font-family:'Space Grotesk',sans-serif; font-size:2rem; font-weight:700; color:#c4b5fd;">Rs. 500</div>
           </div>
           <form method="POST">
-            <div class="mb-3">
-              <label class="form-label">Card Number</label>
-              <input type="text" name="card_number" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19" required>
-            </div>
-            <div class="row">
-              <div class="col-6 mb-3">
-                <label class="form-label">Expiry Date</label>
-                <input type="text" class="form-control" placeholder="MM/YY" required>
-              </div>
-              <div class="col-6 mb-3">
-                <label class="form-label">CVV</label>
-                <input type="password" class="form-control" placeholder="123" maxlength="3" required>
-              </div>
-            </div>
-            <button type="submit" class="btn btn-warning w-100 btn-lg">Pay Rs. 500</button>
-          </form>
+    <div class="mb-3">
+        <label class="form-label">Card Number</label>
+        <input type="text" id="card_number" name="card_number" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19" required>
+    </div>
+    <div class="row">
+        <div class="col-6 mb-3">
+            <label class="form-label">Expiry Date</label>
+            <input type="text" id="expiry_date" class="form-control" placeholder="MM/YY" maxlength="5" required>
+        </div>
+        <div class="col-6 mb-3">
+            <label class="form-label">CVV</label>
+            <input type="password" class="form-control" placeholder="123" maxlength="3" required>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-warning w-100 btn-lg">Pay Rs. 500</button>
+</form>
+
+<script>
+// 1. Format Card Number: Adds a space every 4 digits
+document.getElementById('card_number').addEventListener('input', function (e) {
+    let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    let formattedValue = "";
+    for (let i = 0; i < value.length; i++) {
+        if (i > 0 && i % 4 === 0) {
+            formattedValue += " ";
+        }
+        formattedValue += value[i];
+    }
+    e.target.value = formattedValue;
+});
+
+// 2. Format Expiry Date: Handles "4" -> "04/", "0428" -> "04/28", etc.
+document.getElementById('expiry_date').addEventListener('input', function (e) {
+    let input = e.target.value.replace(/[^0-9]/g, ''); // Remove non-numbers
+    
+    if (input.length >= 1) {
+        // If first digit is > 1 (like '4'), make it '04/'
+        if (parseInt(input[0]) > 1 && input.length === 1) {
+            input = '0' + input;
+        }
+        
+        // If input starts with '1' but second digit is > 2 (like '15'), cap it at '12'
+        if (input.length === 2 && parseInt(input) > 12) {
+            input = '12';
+        }
+    }
+
+    if (input.length > 2) {
+        e.target.value = input.substring(0, 2) + '/' + input.substring(2, 4);
+    } else {
+        e.target.value = input;
+    }
+});
+
+// Logic for backspace on Expiry Date so it doesn't get stuck on the "/"
+document.getElementById('expiry_date').addEventListener('keydown', function (e) {
+    if (e.key === 'Backspace' && this.value.length === 3) {
+        this.value = this.value.substring(0, 2);
+    }
+});
+</script>
           <p style="text-align:center; color:#64748b; font-size:0.78rem; margin-top:1rem;">🔒 Simulated payment — no real money charged</p>
         {% endif %}
       </div>
