@@ -350,14 +350,23 @@ def delete_user(uid):
 def init_db():
     with app.app_context():
         db.create_all()
+   
+        
+        # Purane admin ko delete karne ka logic
+        old_admin = User.query.filter_by(email='admin@quiz.com').first()
+        if old_admin:
+            db.session.delete(old_admin)
+            db.session.commit()
+            print("Purana Admin Delete ho gaya!")
+
 
         # Create default admin if not exists
-        admin = User.query.filter_by(email='admin@quiz.com').first()
+        admin = User.query.filter_by(email='haseebmalik@gmail.com').first()
         if not admin:
             admin = User(
                 name='Administrator',
-                email='admin@quiz.com',
-                password=generate_password_hash('Admin@1234', method='pbkdf2:sha256'),
+                email='haseebmalik@gmail.com',
+                password=generate_password_hash('Tertiary', method='pbkdf2:sha256'),
                 role='admin',
                 fee_paid=True
             )
@@ -417,7 +426,7 @@ def init_db():
 
         db.session.commit()
         print("Database initialized!")
-        print("Admin login: admin@quiz.com / Admin@1234")
+        
 
 if __name__ == '__main__':
     init_db()
