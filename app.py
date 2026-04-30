@@ -421,8 +421,7 @@ def init_db():
 
 if __name__ == '__main__':
     init_db()
-    # ============================================================
-    # SECURITY FIX 8: Security Misconfiguration (OWASP A05)
-    # Debug=False in production, restrict host
-    # ============================================================
-    app.run(debug=True, host='127.0.0.1', port=5000)
+    # Render provides a PORT environment variable. If not found, use 5000.
+    port = int(os.environ.get("PORT", 5000))
+    # host='0.0.0.0' is required for the cloud to access the container
+    app.run(debug=False, host='0.0.0.0', port=port)
