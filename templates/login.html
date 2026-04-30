@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Login - QuizSecure{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+  <div class="col-md-4">
+    <div class="text-center mb-4">
+      <div style="font-size:2.5rem;">🔐</div>
+      <h3 style="font-family:'Space Grotesk',sans-serif; background:linear-gradient(135deg,#c4b5fd,#67e8f9); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; display:inline-block;">
+        Welcome Back
+      </h3>
+      <p style="color:#64748b; font-size:0.88rem; margin-top: 0.5rem;">Sign in to your QuizSecure account</p>
+    </div>
+
+    <div class="card">
+      <div class="card-body p-4">
+        <form method="POST">
+          <div class="mb-3">
+            <label class="form-label">Email Address</label>
+            <input type="email" name="email" class="form-control" placeholder="your@email.com" required>
+          </div>
+          <div class="mb-4">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100 btn-lg">Sign In →</button>
+        </form>
+        <hr style="margin: 1.5rem 0;">
+        <p class="text-center mb-2" style="color:#64748b; font-size:0.88rem;">No account? <a href="{{ url_for('register') }}" style="color:#a78bfa;">Register here</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

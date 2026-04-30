@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Pay Fee - QuizSecure{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-4">
+  <div class="col-md-5">
+    <div class="text-center mb-4">
+      <div style="font-size:2.5rem;">💳</div>
+      <h3 style="font-family:'Space Grotesk',sans-serif;">Fee Payment</h3>
+      <p style="color:#64748b; font-size:0.88rem;">Pay to unlock quiz access</p>
+    </div>
+    <div class="card">
+      <div class="card-body p-4">
+        {% if user.fee_paid %}
+          <div class="alert alert-success text-center">✅ Fee already paid! You can take the quiz.</div>
+          <a href="{{ url_for('take_quiz') }}" class="btn btn-success w-100 btn-lg">🚀 Take Quiz Now</a>
+        {% else %}
+          <div style="background:rgba(124,58,237,0.1); border:1px solid rgba(124,58,237,0.2); border-radius:12px; padding:1rem; margin-bottom:1.5rem; text-align:center;">
+            <div style="color:#94a3b8; font-size:0.82rem; margin-bottom:0.25rem;">Amount Due</div>
+            <div style="font-family:'Space Grotesk',sans-serif; font-size:2rem; font-weight:700; color:#c4b5fd;">Rs. 500</div>
+          </div>
+          <form method="POST">
+            <div class="mb-3">
+              <label class="form-label">Card Number</label>
+              <input type="text" name="card_number" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19" required>
+            </div>
+            <div class="row">
+              <div class="col-6 mb-3">
+                <label class="form-label">Expiry Date</label>
+                <input type="text" class="form-control" placeholder="MM/YY" required>
+              </div>
+              <div class="col-6 mb-3">
+                <label class="form-label">CVV</label>
+                <input type="password" class="form-control" placeholder="123" maxlength="3" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-warning w-100 btn-lg">Pay Rs. 500</button>
+          </form>
+          <p style="text-align:center; color:#64748b; font-size:0.78rem; margin-top:1rem;">🔒 Simulated payment — no real money charged</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

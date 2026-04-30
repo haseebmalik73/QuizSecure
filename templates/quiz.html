@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Quiz - QuizSecure{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+
+    <!-- Header bar -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; padding:1rem 1.25rem; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:14px;">
+      <div>
+        <h5 style="margin:0; font-family:'Space Grotesk',sans-serif;">📝 Online Quiz</h5>
+        <p style="margin:0; color:#64748b; font-size:0.8rem;">{{ questions|length }} questions · Answer all before time runs out</p>
+      </div>
+      <span id="timer" class="badge">⏱️ 15:00</span>
+    </div>
+
+    <form method="POST" action="{{ url_for('submit_quiz') }}" id="quizForm">
+      {% for q in questions %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <p style="font-weight:600; color:#f1f5f9; margin-bottom:1rem;">
+            <span style="color:#a78bfa; font-family:'Space Grotesk',sans-serif;">Q{{ loop.index }}.</span>
+            {{ q.question_text }}
+          </p>
+          <div class="row g-2">
+            {% for opt, label in [('a','A'), ('b','B'), ('c','C'), ('d','D')] %}
+            <div class="col-md-6">
+              <div class="option-card form-check">
+                <input class="form-check-input" type="radio"
+                       name="q_{{ q.id }}" id="q{{ q.id }}_{{ label }}"
+                       value="{{ label }}" required>
+                <label class="form-check-label w-100" for="q{{ q.id }}_{{ label }}">
+                  <strong style="color:#a78bfa;">{{ label }}.</strong>
+                  {{ q['option_' + opt] }}
+                </label>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+      <div class="text-center mt-4 mb-5">
+        <button type="submit" class="btn btn-success btn-lg px-5">✅ Submit Quiz</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+let timeLeft = 15 * 60;
+const timerEl = document.getElementById('timer');
+const interval = setInterval(() => {
+  let m = Math.floor(timeLeft / 60);
+  let s = timeLeft % 60;
+  timerEl.textContent = '⏱️ ' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  if (timeLeft <= 60) timerEl.classList.add('danger');
+  if (timeLeft <= 0) { clearInterval(interval); document.getElementById('quizForm').submit(); }
+  timeLeft--;
+}, 1000);
+</script>
+{% endblock %}

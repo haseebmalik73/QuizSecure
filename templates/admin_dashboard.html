@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Admin Panel - QuizSecure{% endblock %}
+{% block content %}
+
+<div class="d-flex align-items-center mb-4 gap-3">
+  <div style="width:50px;height:50px;background:linear-gradient(135deg,#7c3aed,#5b21b6);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">🔐</div>
+  <div>
+    <h4 style="margin:0;font-family:'Space Grotesk',sans-serif;">Admin Control Panel</h4>
+    <p style="margin:0;color:#64748b;font-size:0.85rem;">Manage students, questions & results</p>
+  </div>
+</div>
+
+<!-- Stat cards -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="stat-card purple">
+      <div class="stat-num">{{ users|length }}</div>
+      <div class="stat-label">Students</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card cyan">
+      <div class="stat-num">{{ questions|length }}</div>
+      <div class="stat-label">Questions</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card green">
+      <div class="stat-num">{{ results|length }}</div>
+      <div class="stat-label">Attempts</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card gold">
+      <div class="stat-num">{{ users|selectattr('fee_paid')|list|length }}</div>
+      <div class="stat-label">Fee Paid</div>
+    </div>
+  </div>
+</div>
+
+<!-- Students -->
+<div class="card mb-4">
+  <div class="card-header" style="background:rgba(255,255,255,0.03) !important; display:flex; justify-content:space-between; align-items:center;">
+    <span>👥 Registered Students</span>
+  </div>
+  <div class="card-body p-0" style="padding:0 !important;">
+    <table class="table mb-0">
+      <thead>
+        <tr><th>#</th><th>Name</th><th>Email</th><th>Fee</th><th>Assign Test Date</th><th>Remove</th></tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td style="font-weight:500; color:#f1f5f9;">{{ u.name }}</td>
+          <td style="color:#94a3b8; font-size:0.85rem;">{{ u.email }}</td>
+          <td>{% if u.fee_paid %}<span class="badge bg-success">Paid</span>{% else %}<span class="badge bg-danger">Unpaid</span>{% endif %}</td>
+          <td>
+            <form method="POST" action="{{ url_for('assign_date', uid=u.id) }}" class="d-flex gap-2">
+              <input type="date" name="test_date" class="form-control form-control-sm" value="{{ u.test_date or '' }}" style="width:140px;">
+              <button class="btn btn-sm btn-info">Set</button>
+            </form>
+          </td>
+          <td>
+            <a href="{{ url_for('delete_user', uid=u.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Delete {{ u.name }}?')">🗑️</a>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-center py-4" style="color:#64748b;">No students registered yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Questions -->
+<div class="card">
+  <div class="card-header" style="background:rgba(255,255,255,0.03) !important; display:flex; justify-content:space-between; align-items:center;">
+    <span>❓ Question Bank</span>
+    <a href="{{ url_for('add_question') }}" class="btn btn-sm btn-success">+ Add Question</a>
+  </div>
+  <div class="card-body p-0" style="padding:0 !important;">
+    <table class="table mb-0">
+      <thead>
+        <tr><th>#</th><th>Question</th><th>Category</th><th>Answer</th><th>Remove</th></tr>
+      </thead>
+      <tbody>
+        {% for q in questions %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td style="color:#94a3b8; font-size:0.85rem;">{{ q.question_text[:65] }}{% if q.question_text|length > 65 %}…{% endif %}</td>
+          <td><span class="badge bg-secondary">{{ q.category }}</span></td>
+          <td><span class="badge bg-primary" style="font-family:'Space Grotesk',sans-serif; font-size:0.85rem;">{{ q.correct_answer }}</span></td>
+          <td>
+            <a href="{{ url_for('delete_question', qid=q.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Delete this question?')">🗑️</a>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-center py-4" style="color:#64748b;">No questions added yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

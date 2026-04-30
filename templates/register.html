@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Register - QuizSecure{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-4">
+  <div class="col-md-5">
+    <div class="text-center mb-4">
+      <div style="font-size:2.5rem;">📝</div>
+      <h3 style="font-family:'Space Grotesk',sans-serif; background:linear-gradient(135deg,#c4b5fd,#67e8f9); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">Create Account</h3>
+      <p style="color:#64748b; font-size:0.88rem;">Join QuizSecure and start your journey</p>
+    </div>
+    <div class="card">
+      <div class="card-body p-4">
+        <form method="POST">
+          <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" name="name" class="form-control" placeholder="Ali Ahmed" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Email Address</label>
+            <input type="email" name="email" class="form-control" placeholder="ali@example.com" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" placeholder="Min 8 characters" minlength="8" required>
+            <div style="margin-top:0.4rem; font-size:0.78rem; color:#64748b;">Must be at least 8 characters</div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirm_password" class="form-control" placeholder="Repeat password" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100 btn-lg">Create Account →</button>
+        </form>
+        <hr style="margin: 1.5rem 0;">
+        <p class="text-center mb-0" style="color:#64748b; font-size:0.88rem;">Already have account? <a href="{{ url_for('login') }}" style="color:#a78bfa;">Sign in</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - QuizSecure{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center mb-4 gap-3">
+  <div style="width:50px;height:50px;background:linear-gradient(135deg,#7c3aed,#06b6d4);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">👤</div>
+  <div>
+    <h4 style="margin:0; font-family:'Space Grotesk',sans-serif;">Welcome back, {{ user.name }}!</h4>
+    <p style="margin:0; color:#64748b; font-size:0.85rem;">{{ user.email }}</p>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Profile card -->
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-header" style="background:linear-gradient(135deg,rgba(124,58,237,0.2),rgba(6,182,212,0.1)) !important; border-bottom:1px solid rgba(124,58,237,0.2) !important;">
+        🪪 My Profile
+      </div>
+      <div class="card-body">
+        <div style="display:flex; flex-direction:column; gap:0.8rem;">
+          <div style="display:flex; justify-content:space-between; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+            <span style="color:#64748b; font-size:0.85rem;">Name</span>
+            <span style="font-weight:500; font-size:0.88rem;">{{ user.name }}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+            <span style="color:#64748b; font-size:0.85rem;">Fee Status</span>
+            {% if user.fee_paid %}
+              <span class="badge bg-success">✅ Paid</span>
+            {% else %}
+              <span class="badge bg-danger">❌ Unpaid</span>
+            {% endif %}
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:0.6rem 0; border-bottom:1px solid rgba(255,255,255,0.05);">
+            <span style="color:#64748b; font-size:0.85rem;">Test Date</span>
+            {% if user.test_date %}
+              <span class="badge bg-info">{{ user.test_date }}</span>
+            {% else %}
+              <span style="color:#64748b; font-size:0.82rem;">Not assigned</span>
+            {% endif %}
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:0.6rem 0;">
+            <span style="color:#64748b; font-size:0.85rem;">Joined</span>
+            <span style="font-size:0.82rem; color:#94a3b8;">{{ user.created_at.strftime('%d %b %Y') }}</span>
+          </div>
+        </div>
+
+        <div class="mt-4 d-grid gap-2">
+          {% if not user.fee_paid %}
+            <a href="{{ url_for('pay_fee') }}" class="btn btn-warning">💳 Pay Fee</a>
+          {% else %}
+            <a href="{{ url_for('take_quiz') }}" class="btn btn-success">🚀 Take Quiz Now</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="col-md-8">
+    <div class="card h-100">
+      <div class="card-header" style="background:rgba(255,255,255,0.03) !important;">
+        📊 My Quiz Results
+      </div>
+      <div class="card-body p-0" style="padding: 0 !important;">
+        {% if results %}
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>#</th><th>Score</th><th>Total</th><th>Percentage</th><th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in results %}
+            {% set pct = (r.score / r.total * 100) | round(1) %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td style="font-family:'Space Grotesk',sans-serif; font-weight:600; color:#f1f5f9;">{{ r.score }}</td>
+              <td>{{ r.total }}</td>
+              <td>
+                <span class="badge {% if pct >= 70 %}bg-success{% elif pct >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
+                  {{ pct }}%
+                </span>
+              </td>
+              <td style="font-size:0.82rem; color:#64748b;">{{ r.date_taken.strftime('%d %b %Y %H:%M') }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="text-center py-5">
+          <div style="font-size:3rem; margin-bottom:1rem;">📋</div>
+          <p style="color:#64748b; font-size:0.9rem;">No quiz attempts yet.</p>
+          {% if user.fee_paid %}
+            <a href="{{ url_for('take_quiz') }}" class="btn btn-success btn-sm mt-2">Take Your First Quiz</a>
+          {% else %}
+            <a href="{{ url_for('pay_fee') }}" class="btn btn-warning btn-sm mt-2">Pay Fee to Unlock</a>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Result - QuizSecure{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-4">
+  <div class="col-md-5 text-center">
+
+    {% if percentage >= 70 %}
+      {% set rclass = "pass" %}{% set emoji = "🎉" %}{% set msg = "Excellent! Well done!" %}
+    {% elif percentage >= 50 %}
+      {% set rclass = "ok" %}{% set emoji = "👍" %}{% set msg = "Good effort! Keep practicing." %}
+    {% else %}
+      {% set rclass = "fail" %}{% set emoji = "📚" %}{% set msg = "Need more practice. Try again!" %}
+    {% endif %}
+
+    <div style="margin-bottom:2rem; font-size:3rem;">{{ emoji }}</div>
+
+    <!-- Score circle -->
+    <div style="width:170px;height:170px;border-radius:50%;margin:0 auto 1.5rem;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      {% if percentage >= 70 %}background:rgba(5,150,105,0.1); box-shadow:0 0 40px rgba(5,150,105,0.2);border:2px solid rgba(52,211,153,0.4);
+      {% elif percentage >= 50 %}background:rgba(217,119,6,0.1); box-shadow:0 0 40px rgba(217,119,6,0.2);border:2px solid rgba(251,191,36,0.4);
+      {% else %}background:rgba(220,38,38,0.1); box-shadow:0 0 40px rgba(220,38,38,0.2);border:2px solid rgba(248,113,113,0.4);
+      {% endif %}">
+      <div style="font-family:'Space Grotesk',sans-serif; font-size:2.8rem; font-weight:800;
+        {% if percentage >= 70 %}color:#34d399;{% elif percentage >= 50 %}color:#fbbf24;{% else %}color:#f87171;{% endif %}">
+        {{ score }}/{{ total }}
+      </div>
+      <div style="font-size:1rem; color:#94a3b8;">{{ percentage }}%</div>
+    </div>
+
+    <div class="card">
+      <div class="card-body p-4">
+        <h4 style="font-family:'Space Grotesk',sans-serif; margin-bottom:0.5rem;">{{ msg }}</h4>
+        <p style="color:#64748b; font-size:0.88rem; margin-bottom:1.5rem;">
+          You answered {{ score }} out of {{ total }} questions correctly.
+        </p>
+        <div class="d-flex gap-3 justify-content-center">
+          <a href="{{ url_for('take_quiz') }}" class="btn btn-primary">🔄 Try Again</a>
+          <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">📊 Dashboard</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
